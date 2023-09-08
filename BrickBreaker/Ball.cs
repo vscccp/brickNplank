@@ -59,7 +59,7 @@ namespace BrickBreaker
             {
                 sideCollision();
             }    
-            if (x > size.Width)
+            if (x > size.Width-100)
             {
                 sideCollision();
             }
@@ -69,7 +69,7 @@ namespace BrickBreaker
             {
                 topCollision();
             }
-            if (y > size.Height)
+            if (y > size.Height-50)
             {
                 topCollision();
             }
@@ -90,14 +90,12 @@ namespace BrickBreaker
 
         public void topCollision()
         {
-            dx *= -1;
             dy *= -1;
         }
 
         public void sideCollision()
         {
             dx *= -1;
-            dy *= -1;
         }
     }
 }

@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
@@ -19,16 +20,25 @@ namespace BrickBreaker
         const int width = 40;
         const int height = 40;
 
-        Canvas canva;
-        Image img;
+        private Canvas canva;
+        private Image img;
+        private Rect hitbox;
 
         public Brick(string picPath, Canvas grid, int x, int y)
         {
+            hitbox = new Rect();
+            hitbox.Width = 50;
+            hitbox.Height = 50;
+            hitbox.X = x;
+            hitbox.Y = y;
+
+            #region Image initialization
             img = new Image();
             img.Width = width;
             img.Height = height;
 
             img.Source = new BitmapImage(new Uri("ms-appx:///" + picPath));
+            #endregion
 
             #region Testing rect
             //Rectangle img = new Rectangle();
@@ -37,16 +47,46 @@ namespace BrickBreaker
             //img.Fill = new SolidColorBrush(Colors.Black);
             #endregion
 
+            #region Adding to canva
             Canvas.SetLeft(img, x);
             Canvas.SetTop(img, y);
 
             grid.Children.Add(img);
+            #endregion
+
             this.canva = grid;
         }
 
-        public void dropBonus()
+        public void RemoveBrick()
         {
-            // TODO: after brick is destroyed drop a bonus
+            canva.Children.Remove(img);
+            DropBonus();
+        }
+
+        public void DropBonus()
+        {
+            if(RollForDropBonus())
+            {
+                // Determine the position to drop the bonus (you can adjust this logic)
+                int bonusX = (int)hitbox.X + width / 2;
+                int bonusY = (int)hitbox.Y + height / 2;
+
+                // Create a bonus object and add it to the canvas
+                Bonus bonus = new Bonus(canva, bonusX, bonusY);
+            }
+        }
+
+        private static bool RollForDropBonus()
+        {
+            Random random = new Random();
+            return random.Next(100) < 10;
+        }
+
+
+
+        public Rect GetHitbox()
+        {
+            return hitbox;
         }
     }
 }

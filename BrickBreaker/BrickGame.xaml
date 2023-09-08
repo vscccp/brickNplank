@@ -18,7 +18,7 @@
 
         <!--#region Bricks-->
         <Canvas x:Name="BrickGrid" Grid.Row="1">
-
+            <Rectangle Fill="green" Width="{Binding ActualWidth, ElementName=BrickGrid}" Height="{Binding ActualHeight, ElementName=BrickGrid}" Canvas.ZIndex="0"/>
         </Canvas>
         <!--#endregion-->
         

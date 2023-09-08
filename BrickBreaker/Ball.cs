@@ -19,32 +19,50 @@ namespace BrickBreaker
     {
         private int x;
         private int y;
-        private int dx = 20;
-        private int dy = 20;
+        private int dx = 7;
+        private int dy = 9;
 
         private Canvas canva;
         private Ellipse circle;
+        private Rect hitbox;
         private DispatcherTimer MoveTimer;
 
         public Ball(Canvas grid)
         {
+            #region Timer init
             MoveTimer = new DispatcherTimer();
             MoveTimer.Interval = TimeSpan.FromTicks(20);
             MoveTimer.Tick += MoveTimer_Tick;
+            #endregion
 
+            #region Circle init
             circle = new Ellipse();
-            circle.Height = 50;
-            circle.Width = 50;
+            circle.Height = 30;
+            circle.Width = 30;
             circle.Fill = new SolidColorBrush(Colors.DarkGray);
+            #endregion
+
+            #region Put ball on canvas
 
             Size size = GetScreenResolutionInfo();
-
             x = (int)size.Width / 2;
             y = (int)size.Height - 350;
             Canvas.SetLeft(circle, x);
             Canvas.SetTop(circle, y);
 
             grid.Children.Add(circle);
+            #endregion
+
+            #region Hitbox init
+
+            hitbox = new Rect();
+            hitbox.Width = 30;
+            hitbox.Height = 30;
+            hitbox.X = x;
+            hitbox.Y = y;
+
+            #endregion
+
             canva = grid;
 
             MoveTimer.Start();
@@ -55,25 +73,19 @@ namespace BrickBreaker
             Size size = GetScreenResolutionInfo();
 
             x += dx;
-            if (x < 0)
+            if (x < 0 || x > size.Width - 100)
             {
-                sideCollision();
-            }    
-            if (x > size.Width-100)
-            {
-                sideCollision();
+                SideCollision();
             }
 
             y += dy;
-            if (y < 0)
+            if (y < 0 || y > size.Height - 250)
             {
-                topCollision();
-            }
-            if (y > size.Height-50)
-            {
-                topCollision();
+                TopCollision();
             }
 
+            hitbox.X = x;
+            hitbox.Y = y;
             Canvas.SetLeft(circle, x);
             Canvas.SetTop(circle, y);
         }
@@ -88,14 +100,19 @@ namespace BrickBreaker
             return size;
         }
 
-        public void topCollision()
+        public void TopCollision()
         {
             dy *= -1;
         }
 
-        public void sideCollision()
+        public void SideCollision()
         {
             dx *= -1;
+        }
+
+        public Rect GetHitbox()
+        {
+            return hitbox;
         }
     }
 }

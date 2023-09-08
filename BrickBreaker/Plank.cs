@@ -23,26 +23,45 @@ namespace BrickBreaker
     class Plank
     {
         
-        private readonly int speed = 12;
+        private readonly int speed = 24;
 
         private int x;
         private Canvas canva;
         private Rectangle rect;
+        private Rect hitbox;
 
         public Plank(Canvas grid)
         {
-            #region Testing rect
+            Size size = GetScreenResolutionInfo();
+
+            #region Rectangle init
+
             rect = new Rectangle();
             rect.Width = 175;
             rect.Height = 35;
             rect.Fill = new SolidColorBrush(Colors.Black);
+
             #endregion
 
-            Size size = GetScreenResolutionInfo();
+            #region Hitbox init
+
+            hitbox = new Rect();
+            hitbox.Width = 175;
+            hitbox.Height = 35;
+            hitbox.X = (int)size.Width / 2;
+            hitbox.Y = (int)size.Height - 275;
+
+            #endregion
+
+            #region Set on Canvas
+
             Canvas.SetLeft(rect, size.Width / 2);
             Canvas.SetTop(rect, size.Height - 250);
 
             grid.Children.Add(rect);
+
+            #endregion
+
             this.canva = grid;
         }
 
@@ -56,29 +75,28 @@ namespace BrickBreaker
             return size;
         }
 
-        public void Move(Direction dir)
+        public void UpdatePosition(double mouseX)
         {
             Size size = GetScreenResolutionInfo();
+            x = (int)mouseX - (int)(rect.Width / 2);
 
-            switch (dir)
+            // Ensure the plank stays within the game area
+            if (x < 0)
             {
-                case Direction.Left:
-                    x -= speed;
-                    if(x < 0)
-                    {
-                        x = 0;
-                    }
-                    Canvas.SetLeft(rect, x);
-                    break;
-                case Direction.Right:
-                    x += speed;
-                    if(x > size.Width)
-                    {
-                        x = (int)size.Width;
-                    }
-                    Canvas.SetLeft(rect, x);
-                    break;
+                x = 0;
             }
+            else if (x + rect.Width > size.Width)
+            {
+                x = (int)(size.Width - rect.Width);
+            }
+
+            hitbox.X = x;
+            Canvas.SetLeft(rect, x);
+        }
+
+        public Rect GetHitbox()
+        {
+            return hitbox;
         }
     }
 }

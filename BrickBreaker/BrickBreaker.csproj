@@ -120,6 +120,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Ball.cs" />
+    <Compile Include="Bonus.cs" />
     <Compile Include="Brick.cs" />
     <Compile Include="BrickGame.xaml.cs">
       <DependentUpon>BrickGame.xaml</DependentUpon>

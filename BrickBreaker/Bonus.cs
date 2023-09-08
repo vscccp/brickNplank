@@ -32,7 +32,7 @@ namespace BrickBreaker
             circle = new Ellipse();
             circle.Width = 20;
             circle.Height = 20;
-            circle.Fill = new SolidColorBrush(Colors.Green); // You can change the color
+            circle.Fill = new SolidColorBrush(Colors.AliceBlue); // You can change the color
 
             this.x = x;
             this.y = y;
@@ -63,13 +63,20 @@ namespace BrickBreaker
             {
                 canva.Children.Remove(circle);
             }
+            if(CollidesWithPlank())
+            {
+                BrickGame.TripleBalls();
+            }
         }
 
-        public bool CollidesWithPlank(Rect plankHitbox)
+        public bool CollidesWithPlank()
         {
             // Check for collision between bonus hitbox and plank hitbox
-            Rect intersection = RectHelper.Intersect(new Rect(x, y, circle.Width, circle.Height), plankHitbox);
+            
+            Rect intersection = RectHelper.Intersect(new Rect(x, y, circle.Width, circle.Height), BrickGame.GetPlankHitbox());
             return (intersection.Width > 0 && intersection.Height > 0);
         }
+
+        
     }
 }

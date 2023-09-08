@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -14,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,10 +28,12 @@ namespace BrickBreaker
     {
         private bool canCollideWithPlank = true;
 
-        Plank plank;
+        static Plank plank;
         Ball ball;
 
         List<Brick> bricks;
+        static List<Ball> balls;
+        static Canvas BrickGrid;
 
         DispatcherTimer brickCollisionChecker;
         DispatcherTimer plankCollisionChecker;
@@ -37,12 +41,35 @@ namespace BrickBreaker
         public BrickGame()
         {
             this.InitializeComponent();
+            balls = new List<Ball>();
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            #region Grid init
+            BrickGrid = new Canvas();
+            BrickGrid.Name = "BrickGrid";
+            mainGrid.Children.Add(BrickGrid);
+            Grid.SetRow(BrickGrid, 1);
+
+            // Create a green rectangle
+            Rectangle greenRectangle = new Rectangle();
+            greenRectangle.Fill = new SolidColorBrush(Colors.Green);
+
+            greenRectangle.Width = ActualWidth;
+            greenRectangle.Height = ActualHeight;
+
+            // Set the ZIndex for the rectangle (optional)
+            Canvas.SetZIndex(greenRectangle, 0);
+
+            // Add the rectangle to the Canvas
+            BrickGrid.Children.Add(greenRectangle);
+
+            
+            #endregion
+
             plank = new Plank(BrickGrid);
-            ball = new Ball(BrickGrid);
+            ball = new Ball(BrickGrid, (int)ActualWidth/2, (int)ActualHeight-350, 7, 9);
             bricks = new List<Brick>();
 
             #region Timers init
@@ -119,6 +146,13 @@ namespace BrickBreaker
             canCollideWithPlank = true;
         }
 
+        public static Rect GetPlankHitbox()
+        {
+            return plank.GetHitbox();
+        }
+
+        
+
         private void CollisionChecker_Tick(object sender, object e)
         {
             foreach (Brick brick in bricks)
@@ -140,6 +174,16 @@ namespace BrickBreaker
 
                     break;
                 }
+            }
+        }
+
+        public static void TripleBalls()
+        {
+            // Create two additional balls and add them to the canvas
+            for (int i = 0; i < 2; i++)
+            {
+                Ball newBall = new Ball(BrickGrid, (int)plank.GetHitbox().X, (int)plank.GetHitbox().Y - 350, 7, -9); // Adjust the starting position as needed
+                balls.Add(newBall);
             }
         }
     }

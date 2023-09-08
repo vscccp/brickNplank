@@ -27,8 +27,11 @@ namespace BrickBreaker
         private Rect hitbox;
         private DispatcherTimer MoveTimer;
 
-        public Ball(Canvas grid)
+        public Ball(Canvas grid, int startX, int startY, int dx, int dy)
         {
+            this.dx = dx;
+            this.dy = dy;
+
             #region Timer init
             MoveTimer = new DispatcherTimer();
             MoveTimer.Interval = TimeSpan.FromTicks(20);
@@ -45,8 +48,8 @@ namespace BrickBreaker
             #region Put ball on canvas
 
             Size size = GetScreenResolutionInfo();
-            x = (int)size.Width / 2;
-            y = (int)size.Height - 350;
+            x = startX;
+            y = startY;
             Canvas.SetLeft(circle, x);
             Canvas.SetTop(circle, y);
 
@@ -79,11 +82,15 @@ namespace BrickBreaker
             }
 
             y += dy;
-            if (y < 0 || y > size.Height - 250)
+            if (y < 0)
             {
                 TopCollision();
             }
-
+            if (y > canva.ActualHeight)
+            {
+                //canva.Children.Remove(circle);
+                TopCollision();
+            }
             hitbox.X = x;
             hitbox.Y = y;
             Canvas.SetLeft(circle, x);

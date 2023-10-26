@@ -37,6 +37,7 @@ namespace BrickBreaker
 
         DispatcherTimer brickCollisionChecker;
         DispatcherTimer plankCollisionChecker;
+        DispatcherTimer bonusBallsCollisionChecker;
 
         public BrickGame()
         {
@@ -81,6 +82,10 @@ namespace BrickBreaker
             plankCollisionChecker = new DispatcherTimer();
             plankCollisionChecker.Interval = TimeSpan.FromTicks(150);
             plankCollisionChecker.Tick += PlankCollisionChecker_Tick;
+
+            bonusBallsCollisionChecker = new DispatcherTimer();
+            bonusBallsCollisionChecker.Interval = TimeSpan.FromTicks(50);
+            bonusBallsCollisionChecker.Tick += BonusBallsCollisionChecker_Tick;
             #endregion
 
             #region Bricks init
@@ -102,6 +107,11 @@ namespace BrickBreaker
 
             plankCollisionChecker.Start();
             brickCollisionChecker.Start();
+        }
+
+        private void BonusBallsCollisionChecker_Tick(object sender, object e)
+        {
+            
         }
 
         private void BrickGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
